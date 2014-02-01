@@ -10,10 +10,5 @@ $ ./sbc "1 1 2 5 8 13 21 34 55 89 144 233 377"
 
 For more information see the USAGE comments in simpleBarCharter.sh
 
-NOTE: Up until version 0.0.9 this utility was called,
-      makeXRectsOfWidthW-givenListOfYRectHeights.sh
-      Originally the SVG sbcTemplates where a little simpler and were not kept
-      is a sub-directory.
-
 MSK
 
