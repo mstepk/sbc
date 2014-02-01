@@ -14,20 +14,47 @@ plotHeight=405
 rectSpacing=5
 xStartRect=10
 yStartRect=10
-plotWidth=$1
-plotHeight=$2
-rectWidth=$3
-listOfRectHeigths="$4"
+#plotWidth=$1
+#plotHeight=$2
+rectWidth=$1 # $3
+listOfRectHeigths="$2" # "$4"
 slideRectsToBottomOfPlot=1
-echo "Rectangle Template: $rectTemplate" 
-printf 'width: %i and heigths:' "$rectWidth" 
+useMinimumPlotDims=1
+printf '\nRectangle Template: %s\n' "$rectTemplate" 
+printf '\nwidth: %i and heigths:' "$rectWidth" 
 
+minPlotWidth=`expr \( $xStartRect \* 2 \) + $rectSpacing`
+minPlotHeight=`expr \( $yStartRect \* 2 \) + $rectSpacing`
+maxY=0
+numRects=0
 for Y in $listOfRectHeigths;
 	do
+		numRects=`expr $numRects + 1`
 		printf ' %i' $Y
+		#minPlotWidth=`expr $minPlotWidth + $rectWidth + $rectSpacing`
+		#printf '\n:%s:\n' ":$minPlotWidth:$rectWidth:$rectSpacing:"
+		if test $Y -ge $maxY;
+			then
+				maxY=$Y
+		fi;
 	done;
 
-printf '\n%s\n' ''
+if test $maxY -gt 0;
+	then
+		minPlotHeight=`expr $maxY + \( $yStartRect \* 2 \)`
+fi;
+
+minPlotWidth=`expr \( \( $rectWidth + $rectSpacing \) \* $numRects \) + \( $xStartRect \* 2 \)`
+
+if test $useMinimumPlotDims -eq 1;
+	then
+		plotWidth="$minPlotWidth"
+		plotHeight="$minPlotHeight"
+fi;
+
+printf '\nPlot Width: %s, Plot Height: %s\n' "$plotWidth" "$plotHeight"
+
+printf '\n%s\n' 'Building Rects/Bars ...'
 
 i=0
 rectSet=''
@@ -36,7 +63,7 @@ for Y in $listOfRectHeigths;
 		spacing=`expr $i \* $rectSpacing`
 		shiftRight=`expr $i \* $rectWidth + $spacing`
 		i=`expr $i + 1`
-		printf ' %i' $Y
+		printf '\n %i: Bar Height (%i)' "$i" "$Y"
 		if test $slideRectsToBottomOfPlot -eq 1;
 			then
 				slideDown=`expr \( $plotHeight - $Y \) - \( $yStartRect \* 2 \)`
@@ -55,6 +82,7 @@ for Y in $listOfRectHeigths;
 		blue=`expr $blue + $delta`
 		blue=`expr $blue % 256`
 		RGB='#'"$red$green$blue" # "s/cFill/$RGB/g"
+		printf ', Bar Color => R(%i), G(%i), B(%i)' "$red" "$blue" "$green"
 		RGB='rgb('"$red"', '"$green"', '"$blue"')'
 		customRect=`sed -e "s/xStart/$xStartRect/g" -e "s/yStart/$yStartRect/g" -e "s/X/$rectWidth/g" -e "s/Y/$Y/g" -e "s/cFill/$RGB/g" -e "s/xTrans/$shiftRight/g" -e "s/yTrans/$yTrans/g" $rectTemplate`
 		rectSet="$rectSet$customRect"
