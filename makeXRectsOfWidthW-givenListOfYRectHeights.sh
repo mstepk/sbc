@@ -169,25 +169,22 @@ for Y in $listOfRectHeigths;
 		printf ' %s' "$Y"
 		hasLabel=`printf '%s' "$Y" | grep -ce ':'`
 		barHeight="$Y"
-		if test $numRects -eq 1;
-			then
-				barHeigths="$barHeight"
-			else
-				barHeigths="$barHeigths $barHeight"
-		fi;
 		if test $hasLabel -eq 1;
 			then
 				barHeight=`printf '%s' "$Y" | cut -d ':' -f 1`
 				barLabel=`printf '%s' "$Y" | cut -d ':' -f 2`
 				numLabels=`expr $numLabels + 1`
-				if test $numRects -eq 1;
-					then
-						barLabels="$barLabel"
-					else
-						barLabels="$barLabels $barLabel"
-				fi;
 			else
 				barLabel=''
+				barHeight="$Y"
+		fi;
+		if test $numRects -eq 1;
+			then
+				barHeigths="$barHeight"
+				barLabels="$barLabel"
+			else
+				barHeigths="$barHeigths $barHeight"
+				barLabels="$barLabels $barLabel"
 		fi;
 		if test $barHeight -ge $maxY; then maxY=$barHeight; fi;
 	done;
@@ -200,6 +197,7 @@ yChartLabelStart=`expr $chartLabelHeight + $labelPadding`
 chartLabelDisplay='none'
 barLabelHeight=`expr $minPlotHeight / $labelInverseFactor`
 barLabelsDisplay='none'
+barLabelsOnTop=1
 if test $printChartLabel -eq 1;
 	then
 		printf '\nChart Label Text (%s), Chart Label Height (%i) ::: Num Bars (%i), Num Bar Labels (%i)\n' "$chartLabelText" "$chartLabelHeight" "$numRects" "$numLabels"
@@ -208,14 +206,24 @@ if test $printChartLabel -eq 1;
 			then
 				minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \)`
 			else
-				minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \) + $barLabelHeight + \( $labelPadding \* 2 \)`
 				barLabelsDisplay='block'
+				if test $barLabelsOnTop -eq 0;
+					then
+						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \) + $barLabelHeight + \( $labelPadding \* 2 \)`
+					else
+						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \)`
+				fi;
 		fi;
 	else
 		if test $numLabels -ge 1;
 			then
-				minPlotHeight=`expr $minPlotHeight + $barLabelHeight + \( $labelPadding \* 2 \)`
 				barLabelsDisplay='block'
+				if test $barLabelsOnTop -eq 0;
+					then
+						minPlotHeight=`expr $minPlotHeight + $barLabelHeight + \( $labelPadding \* 2 \)`
+					else
+						minPlotHeight=`expr $minPlotHeight`
+				fi;
 		fi;
 fi;
 #chartLabelHeight=`expr $minPlotHeight / $labelInverseFactor`
@@ -229,6 +237,7 @@ if test $dynamicWidthDeterminationBasedOnDefaultAspectRatio -eq 1;
 		rectWidth=`printf '%s' "$rectWidthFloat" | cut -d '.' -f 1` #`expr $rectWidthFloat + 1`
 		rectSpacing=`printf '%s' "$rectSpacingFloat" | cut -d '.' -f 1` #`expr $rectSpacingFloat - 1`
 		printf '\nminPlotWidthFloat (%s) and rectWidthFloat (%s) and rectSpacingFloat (%s) dynamically determined based on defaultAspectRatio (%s) and maxY (%s).\n' "$minPlotWidthFloat" "$rectWidthFloat" "$rectSpacingFloat" "$defaultAspectRatio" "$maxY"
+		if test "$rectSpacing" = ''; then rectSpacing=1; fi;
 fi;
 
 printf '\nRectangle Widths (all equal): %i' "$rectWidth"
@@ -252,6 +261,14 @@ for Y in $barHeigths;
 		shiftRight=`expr $i \* $rectWidth + $spacing`
 		i=`expr $i + 1`
 		printf '\n %i: Bar Height (%i)' "$i" "$Y"
+		barLabelText=`printf '%s' "$barLabels" | cut -d ' ' -f $i`
+		xBarLabelStart=`expr $xStartRect + $shiftRight + \( $rectSpacing \* 2 \)`
+		if test $barLabelsOnTop -eq 1;
+			then
+				yBarLabelStart=`expr $plotHeight - $Y - $barLabelHeight`
+			else
+				yBarLabelStart=`expr $plotHeight - $barLabelHeight`
+		fi;
 		if test $slideRectsToBottomOfPlot -eq 1;
 			then
 				slideDown=`expr \( $plotHeight - $Y \) - \( $yStartRect \* 2 \)`
@@ -273,7 +290,7 @@ for Y in $barHeigths;
 		printf ', Bar Color => R(%i), G(%i), B(%i)' "$red" "$blue" "$green"
 		RGB='rgb('"$red"', '"$green"', '"$blue"')'
 		customRect=`sed -e "s/xStart/$xStartRect/g" -e "s/yStart/$yStartRect/g" -e "s/\"X\"/\"$rectWidth\"/g" -e "s/\"Y\"/\"$Y\"/g" -e "s/cFill/$RGB/g" -e "s/xTrans/$shiftRight/g" -e "s/yTrans/$yTrans/g" $rectTemplate` # -e "s/LABEL_DISPLAY/$barLabelsDisplay/g" $rectTemplate`
-		customRect=`printf '%s\n' "$customRect" | sed -e "s/LABEL_TEXT/$chartLabelText/g" -e "s/LABEL_HEIGHT/$chartLabelHeight/g" -e "s/xLabelStart/$xChartLabelStart/g" -e "s/yLabelStart/$yChartLabelStart/g" -e "s/LABEL_DISPLAY/$barLabelsDisplay/g"` # -e "s/LABEL_PADDING/labelPadding/g"`
+		customRect=`printf '%s\n' "$customRect" | sed -e "s/LABEL_TEXT/$barLabelText/g" -e "s/LABEL_HEIGHT/$barLabelHeight/g" -e "s/xLabelStart/$xBarLabelStart/g" -e "s/yLabelStart/$yBarLabelStart/g" -e "s/LABEL_DISPLAY/$barLabelsDisplay/g"` # -e "s/LABEL_PADDING/labelPadding/g"`
 		rectSet="$rectSet$customRect"
 	done;
 
