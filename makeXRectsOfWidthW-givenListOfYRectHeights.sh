@@ -2,25 +2,20 @@
 
 templatesDir='sbcTemplates'
 headSVG="$templatesDir"'/decs-n-root.svg'
+rectTemplate="$templatesDir"'/rectWithLabel.svg' # rectSet by N # 'rectXYC00.svg'
 tailSVG="$templatesDir"'/tail.svg'
-rectTemplate="$templatesDir"'/rectWithLabel.svg' # 'rectXYC00.svg'
-
-sbcInstance='rectSet_DT-STAMP.svg'
-rectangleSetOut="$templatesDir"'/derivatives/'
-rectangleSetOutInstance="$rectangleSetOut$sbcInstance"
-derivativesCache="$rectangleSetOut"'.cache/'
-derivativesCacheInstance="$derivativesCache$sbcInstance"
 
 copyrightGPL='COPYING'
 
 ### Copyright 2014 Mark S. Kalusha (MSK) ### 
 ### DUAL GPLv3 or later # or Artistic # Templates can be CC-BY-SA XOR GPL #
 #
-# This program, and optionally the SVG template files listed above,
-# under 'sbc/sbcTemplates', are free software:
-# you can redistribute it and/or modify it under the terms of the
-# GNU General Public License as published by the Free Software Foundation,
-# either version 3 of the License, or (at your option) any later version.
+# This program, sbc (simpleBarCharter), and optionally
+# the SVG template files listed above, under 'sbc/sbcTemplates',
+# are free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,40 +25,84 @@ copyrightGPL='COPYING'
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Bar Colors are dynamically calculated/derived from the constants below:
+workingDir=`pwd`
+begDTStamp=`date +%Y%m%d_%H%M_%s` # 20140131_1948_1391219299
+whoAmI=`whoami`
+if test "$whoAmI" = "$USER"; then uUser="$whoAmI"; fi;
+
+# Program previously named:
+# ../bars/makeXRectsOfWidthW-givenListOfYRectHeights.sh (barChart)
+
+sbcInstance='rectSet_DT-STAMP.svg'
+rectangleSetOut="$templatesDir"'/derivatives/'
+rectangleSetOutInstance="$rectangleSetOut$sbcInstance"
+derivativesCache="$rectangleSetOut"'.cache/'
+derivativesCacheInstance="$derivativesCache$sbcInstance"
+
 # Colors are RGB (Red-Green-Blue), 256 based triples for about 256^3 
+# Bar Colors are dynamically calculated/derived from the constants below:
 baseR=8
 baseG=13
 baseB=5
-baseMultiplier=10
-deltaMultiplier=2
 colorModulus=255
+rgbBaseMultiplier=10
+rgbDeltaMultiplier=2
 
 defaultAspectRatio="16:9"
 arMultiplier=45 # Determines the scale-up factor in pixels.
+
 # FIX-ME NOTE: The current implementation is limited to all 
-# integer inputs.  This gives great resolution and scaling
-# but it would require some multiplication and rounding to
+# integer inputs.
+
+# Integer input eases playing with resolution and scaling,
+# due to its direct correspondence with pixels, but only 
+# if we impose a restriction on screen size.
+# Knowing the screen size ratio would be super for resetting the
+# default defaultAspectRatio and arMultiplier. 
+
+# Dealing with float or chart sizes greater then screen reslution,
+# would require some multiplication and rounding to
 # handle decimal values.
 # Another way might be to use fully float arithmetic in 
 # combination with controlled rounding points.
 
-#plotWidth=720
-#plotHeight=405
+# BUG 1: Labels on Bars, only minimal support, has display issues.
+
+# FEATURE REQUEST 1: Control of Bar Colors
+# => by making the the 1st argument a set of triples
+#    we can allow easy control of the color of each bar
+#    by passing the RGB value.
+
+# FEATURE REQUEST 2: Bar orientation and bar order
+
+# Future merge plans with spc (simplePieCharter):
+# ======> Re-write simpleBarCharter in Ruby
+#  =====> Re-write '../slices/addSegmentValues.sh', simplePieCharter, in Ruby
+#   ====> Allow toggling between pie and bar views
+#    ===> Make tactile * use rooted Android Pad for testing *
+#     ==> Release spbc (simplePieBarCharter)
+#      => APB - App Pie Bar, SCA - Simple Charter App, Chart "eQualizer"!? 80 #  
+
+# plotWidth=720
+# plotHeight=405
+
+useMinimumPlotDims=1
+slideRectsToBottomOfPlot=1
+
 rectSpacing=5
 xStartRect=10
 yStartRect=10
 
-slideRectsToBottomOfPlot=1
-useMinimumPlotDims=1
+# Used to dynamically determine label text size/height based on the height of plot 
+chartLabelInverseFactor=12
+barLabelInverseFactor=`expr $chartLabelInverseFactor \* 2`
 
-chartLabelText='' # 'Bar Chart - Text Title'
-labelInverseFactor=12 # Used to dynamically determine label text size/height based on the height of plot 
+# 'Bar Chart - Text Title'
+chartLabelText=''
 xChartLabelStart=$xStartRect
 yChartLabelStart=$yStartRect
-labelPadding=$rectSpacing
+chartLabelPadding=$rectSpacing
 printChartLabel=1
-workingDir=`pwd`
 
 ### Usage ###
 #
@@ -102,11 +141,12 @@ workingDir=`pwd`
 # as a 4th argument.
 
 listOfRectHeigths="$1" # "$2" # "$4"
-dynamicWidthDeterminationBasedOnDefaultAspectRatio=1
-userMaxY=0
+# $3 is Chart Title (chartLabelText)
+dynamicWidthDeterminationBasedOnDefaultAspectRatio=1 # xOr $2
+userMaxY=0 # xOr $4
 if test $# -gt 1;
 	then
-		rectWidthOrAspectRatioInput="$2" # $1 # $3
+		rectWidthOrAspectRatioInput="$2" # prev-$1 # prevPrev-$3
 		hasColon=`printf '%s' "$rectWidthOrAspectRatioInput" | grep -ce ':'`
 		if test $hasColon -eq 1;
 			then
@@ -131,8 +171,8 @@ if test $# -gt 1;
 						userMaxY=$4
 						if test $# -gt 4;
 							then
-								plotWidth=$5 # $1
-								plotHeight=$5 # $2
+								plotWidth=$5 # originally-$1
+								plotHeight=$5 # originally-$2
 						fi;
 				fi;
 		fi;
@@ -192,26 +232,27 @@ for Y in $listOfRectHeigths;
 if test $userMaxY -ge $maxY; then maxY=$userMaxY; fi;
 if test $maxY -gt 0; then minPlotHeight=`expr $maxY + \( $yStartRect \* 2 \)`; fi;
 
-chartLabelHeight=`expr $minPlotHeight / $labelInverseFactor`
-yChartLabelStart=`expr $chartLabelHeight + $labelPadding`
-chartLabelDisplay='none'
-barLabelHeight=`expr $minPlotHeight / $labelInverseFactor`
+barLabelHeight=`expr $minPlotHeight / $barLabelInverseFactor`
 barLabelsDisplay='none'
 barLabelsOnTop=1
+
+chartLabelHeight=`expr $minPlotHeight / $chartLabelInverseFactor`
+yChartLabelStart=`expr $chartLabelHeight + $chartLabelPadding`
+chartLabelDisplay='none'
 if test $printChartLabel -eq 1;
 	then
 		printf '\nChart Label Text (%s), Chart Label Height (%i) ::: Num Bars (%i), Num Bar Labels (%i)\n' "$chartLabelText" "$chartLabelHeight" "$numRects" "$numLabels"
 		chartLabelDisplay='block'
 		if test $numLabels -eq 0;
 			then
-				minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \)`
+				minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $chartLabelPadding \* 2 \)`
 			else
 				barLabelsDisplay='block'
 				if test $barLabelsOnTop -eq 0;
 					then
-						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \) + $barLabelHeight + \( $labelPadding \* 2 \)`
+						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $chartLabelPadding \* 2 \) + $barLabelHeight + \( $chartLabelPadding \* 2 \)`
 					else
-						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $labelPadding \* 2 \)`
+						minPlotHeight=`expr $minPlotHeight + $chartLabelHeight + \( $chartLabelPadding \* 2 \)`
 				fi;
 		fi;
 	else
@@ -220,14 +261,14 @@ if test $printChartLabel -eq 1;
 				barLabelsDisplay='block'
 				if test $barLabelsOnTop -eq 0;
 					then
-						minPlotHeight=`expr $minPlotHeight + $barLabelHeight + \( $labelPadding \* 2 \)`
+						minPlotHeight=`expr $minPlotHeight + $barLabelHeight + \( $chartLabelPadding \* 2 \)`
 					else
 						minPlotHeight=`expr $minPlotHeight`
 				fi;
 		fi;
 fi;
-#chartLabelHeight=`expr $minPlotHeight / $labelInverseFactor`
-#yChartLabelStart=`expr $chartLabelHeight + \( $labelPadding \*2 \)`
+#chartLabelHeight=`expr $minPlotHeight / $chartLabelInverseFactor`
+#yChartLabelStart=`expr $chartLabelHeight + \( $chartLabelPadding \*2 \)`
 
 if test $dynamicWidthDeterminationBasedOnDefaultAspectRatio -eq 1;
 	then 
@@ -239,6 +280,8 @@ if test $dynamicWidthDeterminationBasedOnDefaultAspectRatio -eq 1;
 		printf '\nminPlotWidthFloat (%s) and rectWidthFloat (%s) and rectSpacingFloat (%s) dynamically determined based on defaultAspectRatio (%s) and maxY (%s).\n' "$minPlotWidthFloat" "$rectWidthFloat" "$rectSpacingFloat" "$defaultAspectRatio" "$maxY"
 		if test "$rectSpacing" = ''; then rectSpacing=1; fi;
 fi;
+
+barLabelHeight=`expr $rectWidth / 2`
 
 printf '\nRectangle Widths (all equal): %i' "$rectWidth"
 minPlotWidth=`expr \( \( $rectWidth + $rectSpacing \) \* $numRects \) + \( $xStartRect \* 2 \) - $rectSpacing`
@@ -276,28 +319,28 @@ for Y in $barHeigths;
 			else
 				yTrans=0
 		fi;
-		delta=`expr $i \* $deltaMultiplier`
-		red=`expr $baseR \* $baseMultiplier`
+		delta=`expr $i \* $rgbDeltaMultiplier`
+		red=`expr $baseR \* $rgbBaseMultiplier`
 		red=`expr $red + $delta` 
 		red=`expr $red % $colorModulus`
-		green=`expr $baseG \* $baseMultiplier`
+		green=`expr $baseG \* $rgbBaseMultiplier`
 		green=`expr $green + $delta`
 		green=`expr $green % $colorModulus`
-		blue=`expr $baseB \* $baseMultiplier`
+		blue=`expr $baseB \* $rgbBaseMultiplier`
 		blue=`expr $blue + $delta`
 		blue=`expr $blue % $colorModulus`
 		RGB='#'"$red$green$blue" # "s/cFill/$RGB/g"
 		printf ', Bar Color => R(%i), G(%i), B(%i)' "$red" "$blue" "$green"
 		RGB='rgb('"$red"', '"$green"', '"$blue"')'
 		customRect=`sed -e "s/xStart/$xStartRect/g" -e "s/yStart/$yStartRect/g" -e "s/\"X\"/\"$rectWidth\"/g" -e "s/\"Y\"/\"$Y\"/g" -e "s/cFill/$RGB/g" -e "s/xTrans/$shiftRight/g" -e "s/yTrans/$yTrans/g" $rectTemplate` # -e "s/LABEL_DISPLAY/$barLabelsDisplay/g" $rectTemplate`
-		customRect=`printf '%s\n' "$customRect" | sed -e "s/LABEL_TEXT/$barLabelText/g" -e "s/LABEL_HEIGHT/$barLabelHeight/g" -e "s/xLabelStart/$xBarLabelStart/g" -e "s/yLabelStart/$yBarLabelStart/g" -e "s/LABEL_DISPLAY/$barLabelsDisplay/g"` # -e "s/LABEL_PADDING/labelPadding/g"`
+		customRect=`printf '%s\n' "$customRect" | sed -e "s/LABEL_TEXT/$barLabelText/g" -e "s/LABEL_HEIGHT/$barLabelHeight/g" -e "s/xLabelStart/$xBarLabelStart/g" -e "s/yLabelStart/$yBarLabelStart/g" -e "s/LABEL_DISPLAY/$barLabelsDisplay/g"` # -e "s/LABEL_PADDING/chartLabelPadding/g"`
 		rectSet="$rectSet$customRect"
 	done;
 
 printf '\n%s\n' ''
 
 svgHead=`sed -e "s/SVG_DOC_WIDTH/$plotWidth/g" -e "s/SVG_DOC_HEIGHT/$plotHeight/g" -e "s/CHART_DOC_WIDTH/$plotWidth/g" -e "s/CHART_DOC_HEIGHT/$plotHeight/g" $headSVG`
-svgTail=`sed -e "s/LABEL_TEXT/$chartLabelText/g" -e "s/LABEL_HEIGHT/$chartLabelHeight/g" -e "s/xLabelStart/$xChartLabelStart/g" -e "s/yLabelStart/$yChartLabelStart/g" -e "s/LABEL_PADDING/labelPadding/g" -e "s/LABEL_DISPLAY/$chartLabelDisplay/g" $tailSVG`
+svgTail=`sed -e "s/LABEL_TEXT/$chartLabelText/g" -e "s/LABEL_HEIGHT/$chartLabelHeight/g" -e "s/xLabelStart/$xChartLabelStart/g" -e "s/yLabelStart/$yChartLabelStart/g" -e "s/LABEL_PADDING/chartLabelPadding/g" -e "s/LABEL_DISPLAY/$chartLabelDisplay/g" $tailSVG`
 dtStamp=`date +%Y%m%d_%H%M_%s` # 20140129_1817_1391041044
 printf '%s' "$svgHead$rectSet$svgTail" > $rectangleSetOutInstance
 yourSimpleBarChart_SVG=`printf '%s' "$derivativesCacheInstance" | sed -e "s/DT-STAMP/$dtStamp/g"`
