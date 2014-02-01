@@ -4,6 +4,22 @@ headSVG='decs-n-root.svg'
 tailSVG='tail.svg'
 rectTemplate='rectXYC00.svg'
 rectangleSetOut='rectSet.svg'
+copyrightGPL='COPYING'
+
+### Copyright 2014 Mark S. Kalusha (MSK) ###
+#
+# This program, and the SVG template files listed abive, are free software:
+# you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation,
+# either version 3 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 baseR=8
 baseG=13
@@ -19,39 +35,78 @@ rectSpacing=5
 xStartRect=10
 yStartRect=10
 
-listOfRectHeigths="$1" # "$2" # "$4"
 slideRectsToBottomOfPlot=1
 useMinimumPlotDims=1
 
-labelText='Bar Chart'
-labelInverseFactor=12 # Used to dynamically determine label text size/height based on height of plot 
+labelText='' # 'Bar Chart - Text Title'
+labelInverseFactor=12 # Used to dynamically determine label text size/height based on the height of plot 
 xLabelStart=$xStartRect
 yLabelStart=$yStartRect
 labelPadding=$rectSpacing
 printLabel=1
+workingDir=`pwd`
 
+### Usage ###
+#
+# This program uses several internal variables allow making a bar chart
+# with a minimum of user input.  Creating an SVG bar chart is as easy as
+# calling/invoking this program with a list of integers.
+#
+# i.e. ./barChart "1 4 9 16 25 36 42"
+# 
+# The 1st argument to this program is a list of heigths, and that is the only
+# required argument.
+#
+# The height of the plot, the bar chart, is determined by using the maximum
+# value in the list of bar/rectangle heights that is passed by the user.
+#
+# The width of the plot is determined using the height of plot along with the
+# 'defaultAspectRatio', forcing the 'plotWidth' and 'plotHeight' to fit the
+# aspect ratio.
+#
+# If a specific/known width, or a different aspect ratio, is desired then it
+# can be provided by the user as the 2nd argument to this program.
+# i.e. 640 or 3:2
+#
+# An optional 3rd argument ...
+
+listOfRectHeigths="$1" # "$2" # "$4"
+dynamicWidthDeterminationBasedOnDefaultAspectRatio=1
+userMaxY=0
 if test $# -gt 1;
 	then
-		rectWidthInput=$2 # $1 # $3
-		if test "$rectWidthInput" = '' -o "$rectWidthInput" = '0' -o "$rectWidthInput" = 'dynamic';
-			then  
-				dynamicWidthDeterminationBasedOnDefaultAspectRatio=1
+		rectWidthOrAspectRatioInput="$2" # $1 # $3
+		hasColon=`printf '%s' "$rectWidthOrAspectRatioInput" | grep -ce ':'`
+		if test $hasColon -eq 1;
+			then
+				xAspect=`printf '%s' "$rectWidthOrAspectRatioInput" | cut -d ':' -f 1`
+				yAspect=`printf '%s' "$rectWidthOrAspectRatioInput" | cut -d ':' -f 2`
+				defaultAspectRatio="$xAspect:$yAspect"
 			else
-				dynamicWidthDeterminationBasedOnDefaultAspectRatio=0
-				rectWidth=$rectWidthInput
+				rectWidthInput="$rectWidthOrAspectRatioInput"
+				if test "$rectWidthInput" = '' -o "$rectWidthInput" = '0' -o "$rectWidthInput" = 'dynamic';
+					then  
+						printf '\nDynamic rectWidth and plotWidth in effect (%s|%s)\n' "$rectWidthOrAspectRatioInput" "$defaultAspectRatio"
+					else
+						dynamicWidthDeterminationBasedOnDefaultAspectRatio=0
+						rectWidth="$rectWidthInput"
+				fi;
 		fi;
 		if test $# -gt 2;
 			then
 				labelText="$3"
-				if test "$labelText" = ''; then printLabel=0; fi; 
 				if test $# -gt 3;
 					then
-						plotWidth=$4 # $1
-						plotHeight=$5 # $2
+						userMaxY=$4
+						if test $# -gt 4;
+							then
+								plotWidth=$5 # $1
+								plotHeight=$5 # $2
+						fi;
 				fi;
 		fi;
 	else
-		dynamicWidthDeterminationBasedOnDefaultAspectRatio=1
+		printf '\nSingle argument provided, dynamic rectWidth and plotWidth in effect (%s).\n' "$defaultAspectRatio"
 fi;
 
 if test $dynamicWidthDeterminationBasedOnDefaultAspectRatio -eq 1;
@@ -63,10 +118,11 @@ if test $dynamicWidthDeterminationBasedOnDefaultAspectRatio -eq 1;
 		aspectRatioB=$(echo "$arH / $arW" | bc -l)
 fi; 
 
+if test "$labelText" = ''; then printLabel=0; fi; 
 
-printf '\n\nRectangle Template: %s\n' "$rectTemplate" 
+printf '\nTemplates (HEAD:BAR:TAIL) => (%s:%s:%s)\n' "$headSVG" "$rectTemplate" "$tailSVG" 
 #printf '\nwidth: %i and heigths:' "$rectWidth" 
-printf '\nRectangle Heigths:' 
+printf '\nRectangle/Bar Heigths:' 
 
 minPlotWidth=`expr \( $xStartRect \* 2 \) + $rectSpacing`
 minPlotHeight=`expr \( $yStartRect \* 2 \) + $rectSpacing`
@@ -82,16 +138,14 @@ for Y in $listOfRectHeigths;
 		if test $Y -ge $maxY; then maxY=$Y; fi;
 	done;
 
-if test $maxY -gt 0;
-	then
-		minPlotHeight=`expr $maxY + \( $yStartRect \* 2 \)`
-fi;
+if test $userMaxY -ge $maxY; then maxY=$userMaxY; fi;
+if test $maxY -gt 0; then minPlotHeight=`expr $maxY + \( $yStartRect \* 2 \)`; fi;
 
 labelHeight=`expr $minPlotHeight / $labelInverseFactor`
 yLabelStart=`expr $labelHeight + $labelPadding`
 if test $printLabel -eq 1;
 	then
-		printf '\nLabel (%s) Height: %i\n' "$labelText" "$labelHeight"
+		printf '\nLabel Text (%s), Label Height (%i)\n' "$labelText" "$labelHeight"
 		minPlotHeight=`expr $minPlotHeight + $labelHeight + \( $labelPadding \* 2 \)`
 		labelDisplay='block'
 	else
@@ -117,7 +171,7 @@ if test $useMinimumPlotDims -eq 1;
 		plotHeight="$minPlotHeight"
 fi;
 
-printf '\nPlot Width: %s, Plot Height: %s\n' "$plotWidth" "$plotHeight"
+printf '\nPlot Width (%s), Plot Height (%s)\n' "$plotWidth" "$plotHeight"
 
 printf '\n%s\n' 'Building Rects/Bars ...'
 
@@ -159,7 +213,7 @@ svgHead=`sed -e "s/DOC_WIDTH/$plotWidth/g" -e "s/DOC_HEIGHT/$plotHeight/g" $head
 svgTail=`sed -e "s/LABEL_TEXT/$labelText/g" -e "s/LABEL_HEIGHT/$labelHeight/g" -e "s/xLabelStart/$xLabelStart/g" -e "s/yLabelStart/$yLabelStart/g" -e "s/LABEL_PADDING/labelPadding/g" -e "s/LABEL_DISPLAY/$labelDisplay/g" $tailSVG`
 printf '%s\n' "$svgHead$rectSet$svgTail" > $rectangleSetOut
 
-chromium-browser %U $rectangleSetOut &
+chromium-browser --app=file:///$workingDir/$rectangleSetOut --app-window-size=$plotWidth,$plotHeight &
 
 # ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 65 "5 8 13 21 34 55 89 144 233 377"
 # ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 20 "10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 210 220 230 240 250 260 270 280 290 300 310 320 330 340 350 360 380"
