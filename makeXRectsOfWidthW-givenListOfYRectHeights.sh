@@ -9,9 +9,16 @@ baseG=5
 baseB=8
 baseMultiplier=10
 deltaMultiplier=2
-tab=5
-rectWidth="$1"
-listOfRectHeigths="$2"
+plotWidth=720
+plotHeight=405
+rectSpacing=5
+xStartRect=10
+yStartRect=10
+plotWidth=$1
+plotHeight=$2
+rectWidth=$3
+listOfRectHeigths="$4"
+slideRectsToBottomOfPlot=1
 echo "Rectangle Template: $rectTemplate" 
 printf 'width: %i and heigths:' "$rectWidth" 
 
@@ -26,10 +33,17 @@ i=0
 rectSet=''
 for Y in $listOfRectHeigths;
 	do
-		spacing=`expr $i \* $tab`
+		spacing=`expr $i \* $rectSpacing`
 		shiftRight=`expr $i \* $rectWidth + $spacing`
 		i=`expr $i + 1`
 		printf ' %i' $Y
+		if test $slideRectsToBottomOfPlot -eq 1;
+			then
+				slideDown=`expr \( $plotHeight - $Y \) - \( $yStartRect \* 2 \)`
+				yTrans=$slideDown
+			else
+				yTrans=0
+		fi;
 		delta=`expr $i \* $deltaMultiplier`
 		red=`expr $baseR \* $baseMultiplier`
 		red=`expr $red + $delta` 
@@ -42,13 +56,13 @@ for Y in $listOfRectHeigths;
 		blue=`expr $blue % 256`
 		RGB='#'"$red$green$blue" # "s/cFill/$RGB/g"
 		RGB='rgb('"$red"', '"$green"', '"$blue"')'
-		customRect=`sed -e "s/X/$rectWidth/g" -e "s/Y/$Y/g" -e "s/cFill/$RGB/g" -e "s/xTrans/$shiftRight/g" -e 's/yTrans/5/g' $rectTemplate`
+		customRect=`sed -e "s/xStart/$xStartRect/g" -e "s/yStart/$yStartRect/g" -e "s/X/$rectWidth/g" -e "s/Y/$Y/g" -e "s/cFill/$RGB/g" -e "s/xTrans/$shiftRight/g" -e "s/yTrans/$yTrans/g" $rectTemplate`
 		rectSet="$rectSet$customRect"
 	done;
 
 printf '\n%s\n' ''
 
-svgHead=`cat $headSVG`
+svgHead=`sed -e "s/DOC_WIDTH/$plotWidth/g" -e "s/DOC_HEIGHT/$plotHeight/g" $headSVG`
 svgTail=`cat $tailSVG`
 printf '%s\n' "$svgHead$rectSet$svgTail" > $rectangleSetOut
 
