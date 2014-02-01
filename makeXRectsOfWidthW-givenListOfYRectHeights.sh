@@ -4,27 +4,45 @@ headSVG='decs-n-root.svg'
 tailSVG='tail.svg'
 rectTemplate='rectXYC00.svg'
 rectangleSetOut='rectSet.svg'
-baseR=13
-baseG=5
-baseB=8
+
+baseR=8
+baseG=13
+baseB=5
 baseMultiplier=10
 deltaMultiplier=2
+
 plotWidth=720
 plotHeight=405
 rectSpacing=5
 xStartRect=10
 yStartRect=10
+
 #plotWidth=$1
 #plotHeight=$2
 rectWidth=$1 # $3
 listOfRectHeigths="$2" # "$4"
 slideRectsToBottomOfPlot=1
 useMinimumPlotDims=1
-printf '\nRectangle Template: %s\n' "$rectTemplate" 
+
+labelText='Bar Chart'
+labelInverseFactor=12 # Used to dynamically determine label text size/height based on height of plot 
+xLabelStart=$xStartRect
+yLabelStart=$yStartRect
+labelPadding=$rectSpacing
+printLabel=1
+
+if test $# -gt 2;
+	then
+		labelText="$3"
+		if test "$labelText" = ''; then printLabel=0; fi; 
+fi; 
+
+printf '\n\nRectangle Template: %s\n' "$rectTemplate" 
 printf '\nwidth: %i and heigths:' "$rectWidth" 
 
 minPlotWidth=`expr \( $xStartRect \* 2 \) + $rectSpacing`
 minPlotHeight=`expr \( $yStartRect \* 2 \) + $rectSpacing`
+
 maxY=0
 numRects=0
 for Y in $listOfRectHeigths;
@@ -33,10 +51,7 @@ for Y in $listOfRectHeigths;
 		printf ' %i' $Y
 		#minPlotWidth=`expr $minPlotWidth + $rectWidth + $rectSpacing`
 		#printf '\n:%s:\n' ":$minPlotWidth:$rectWidth:$rectSpacing:"
-		if test $Y -ge $maxY;
-			then
-				maxY=$Y
-		fi;
+		if test $Y -ge $maxY; then maxY=$Y; fi;
 	done;
 
 if test $maxY -gt 0;
@@ -44,7 +59,17 @@ if test $maxY -gt 0;
 		minPlotHeight=`expr $maxY + \( $yStartRect \* 2 \)`
 fi;
 
-minPlotWidth=`expr \( \( $rectWidth + $rectSpacing \) \* $numRects \) + \( $xStartRect \* 2 \)`
+labelHeight=`expr $minPlotHeight / $labelInverseFactor`
+yLabelStart=`expr $labelHeight + $labelPadding`
+if test $printLabel -eq 1;
+	then
+		printf '\nLabel (%s) Height: %i\n' "$labelText" "$labelHeight"
+		minPlotHeight=`expr $minPlotHeight + $labelHeight + \( $labelPadding \* 2 \)`
+		labelDisplay='block'
+	else
+		labelDisplay='none'
+fi;
+minPlotWidth=`expr \( \( $rectWidth + $rectSpacing \) \* $numRects \) + \( $xStartRect \* 2 \) - $rectSpacing`
 
 if test $useMinimumPlotDims -eq 1;
 	then
@@ -91,13 +116,13 @@ for Y in $listOfRectHeigths;
 printf '\n%s\n' ''
 
 svgHead=`sed -e "s/DOC_WIDTH/$plotWidth/g" -e "s/DOC_HEIGHT/$plotHeight/g" $headSVG`
-svgTail=`cat $tailSVG`
+svgTail=`sed -e "s/LABEL_TEXT/$labelText/g" -e "s/LABEL_HEIGHT/$labelHeight/g" -e "s/xLabelStart/$xLabelStart/g" -e "s/yLabelStart/$yLabelStart/g" -e "s/LABEL_PADDING/labelPadding/g" -e "s/LABEL_DISPLAY/$labelDisplay/g" $tailSVG`
 printf '%s\n' "$svgHead$rectSet$svgTail" > $rectangleSetOut
 
 chromium-browser %U $rectangleSetOut &
 
 # ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 65 "5 8 13 21 34 55 89 144 233 377"
-# ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 14 "10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 210 220 230 240 250 260 270 280 290 300 310 320 330 340 350 360 380"
+# ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 20 "10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 210 220 230 240 250 260 270 280 290 300 310 320 330 340 350 360 380"
 
 exit 0;
 
