@@ -1,0 +1,19 @@
+Simple Bar Charter - CLI to generate SVG bar charts
+
+simpleBarCharter.sh, sbc, is Copyright 2014 by Mark S. Kalusha, msk.
+
+This program produces a simple bar chart in SVG format, given command line 
+inputs, values passed by the user. 
+
+The minimal input is a list of integers, i.e:
+$ ./sbc "1 1 2 5 8 13 21 34 55 89 144 233 377"
+
+For more information see the USAGE comments in simpleBarCharter.sh
+
+NOTE: Up until version 0.0.9 this utility was called,
+      makeXRectsOfWidthW-givenListOfYRectHeights.sh
+      Originally the SVG sbcTemplates where a little simpler and were not kept
+      is a sub-directory.
+
+MSK
+

@@ -1,0 +1,17 @@
+
+		<g display = "LABEL_DISPLAY">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TEXT</text>
+			</a>
+		</g>
+
+	</g>
+
+</svg>
+

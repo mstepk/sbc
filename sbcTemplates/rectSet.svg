@@ -1,0 +1,452 @@
+<?xml 
+	version = "1.0" 
+	encoding = "UTF-8"
+?>
+
+<!DOCTYPE
+	svg
+	PUBLIC
+	"-//W3C//DTD SVG 1.1//EN"
+	"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"
+>
+
+<svg 
+	version = "1.1" 
+	xmlns = "http://www.w3.org/2000/svg" 
+	xmlns:xlink = "http://www.w3.org/1999/xlink" 
+	x = "0px" 
+	y = "0px" 
+	width = "423" 
+	height = "248" 
+	viewBox = "0 0 423 248" 
+	style = "background-color: #000;"
+>
+	<g> <!--transform = "rotate(180, 360, 202.5)"> -->
+
+		<rect
+			x = "0"
+			y = "0"
+			width = "423"
+			height = "248"
+			rx = "0"
+			ry = "0"
+			style =
+				"
+					fill: black;
+					stroke: white;
+					stroke-width: 10;
+					stroke-opacity: 1;
+				"
+		/>
+	  
+	<g
+		id = "rect_10_10_29_1_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(0, 227)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "1"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(82, 132, 52);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA1">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_1_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(34, 227)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "1"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(84, 134, 54);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA1">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_2_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(68, 226)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "2"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(86, 136, 56);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA2">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_3_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(102, 225)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "3"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(88, 138, 58);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA3">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_5_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(136, 223)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "5"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(90, 140, 60);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA5">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_8_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(170, 220)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "8"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(92, 142, 62);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA8">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_13_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(204, 215)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "13"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(94, 144, 64);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA13">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_21_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(238, 207)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "21"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(96, 146, 66);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA21">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_34_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(272, 194)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "34"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(98, 148, 68);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA34">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_55_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(306, 173)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "55"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(100, 150, 70);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA55">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_89_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(340, 139)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "89"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(102, 152, 72);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA89">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+	<g
+		id = "rect_10_10_29_144_cfill"
+		class = "rect_ABC_29"
+		transform = "translate(374, 84)"
+	>
+		<rect
+			x = "10"
+			y = "10"
+			width = "29"
+			height = "144"
+			rx = "2"
+			ry = "2"
+			style =
+				"
+					fill: rgb(104, 154, 74);
+					stroke: #ABC;
+					stroke-width: 2;
+					stroke-opacity: 0.5;
+				"
+		/>
+		<g display = "LABEL_DISPLA144">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "xLabelStart"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "LABEL_HEIGHT"
+					fill = "#ABC"
+				>LABEL_TE29T</text>
+			</a>
+		</g>
+	</g>
+	
+		<g display = "block">
+			<a xlink:href = "http://devlox.net/">
+				<text
+					x = "10"
+					y = "yLabelStart"
+					font-family = "sans-serif"
+					font-size = "18"
+					fill = "#ABC"
+				>Simple Bar Chart</text>
+			</a>
+		</g>
+
+	</g>
+
+</svg>
