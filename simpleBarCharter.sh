@@ -8,7 +8,8 @@ tailSVG="$templatesDir"'/tail.svg'
 copyrightGPL='COPYING'
 
 ### Copyright 2014 Mark S. Kalusha (MSK) ### 
-### DUAL GPLv3 or later # or Artistic # Templates can be CC-BY-SA XOR GPL #
+### DUAL Licsence ## GPLv3 or later, or Ruby License ###
+### Templates can be CC-BY-SA XOR GPL ###
 #
 # This program, sbc (simpleBarCharter), and optionally
 # the SVG template files listed above, under 'sbc/sbcTemplates',
@@ -24,6 +25,9 @@ copyrightGPL='COPYING'
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# For a current copy of this programs source code find me as 'mstepk' on GitHub
+# https://github.com/ => https://github.com/mstepk/sbc
 
 workingDir=`pwd`
 begDTStamp=`date +%Y%m%d_%H%M_%s` # 20140131_1948_1391219299
@@ -60,20 +64,25 @@ arMultiplier=45 # Determines the scale-up factor in pixels.
 # Knowing the screen size ratio would be super for resetting the
 # default defaultAspectRatio and arMultiplier. 
 
-# Dealing with float or chart sizes greater then screen reslution,
-# would require some multiplication and rounding to
-# handle decimal values.
-# Another way might be to use fully float arithmetic in 
-# combination with controlled rounding points.
+# Dealing with float or chart sizes greater then screen resolution,a
+# or pixels available to the window, would require some multiplication 
+# and rounding to handle decimal values.
+# Another way might be to use fully float arithmetic in combination with 
+# controlled rounding points.
 
-# BUG 1: Labels on Bars, only minimal support, has display issues.
+# BUG 1: Labels on Bars, only minimal supported, display of labels is ugly in general,
+#        though not too bad if only a single character label is used.
 
 # FEATURE REQUEST 1: Control of Bar Colors
-# => by making the the 1st argument a set of triples
+# => By making the the 1st argument a set of triples
 #    we can allow easy control of the color of each bar
 #    by passing the RGB value.
 
-# FEATURE REQUEST 2: Bar orientation and bar order
+# FEATURE REQUEST 2: Bar orientation and bar order.
+# => For order maybe go to quadruples instead of triples.
+# => For orientation, allow toggling.
+# => Add config for mobile so that toggling orientation can be triggered by
+#    accelerometer, so graph toggles with device orientation.
 
 # Future merge plans with spc (simplePieCharter):
 # ======> Re-write simpleBarCharter in Ruby
@@ -104,41 +113,43 @@ yChartLabelStart=$yStartRect
 chartLabelPadding=$rectSpacing
 printChartLabel=1
 
-### Usage ###
+### BegUP => Usage and Parameters ----------------------------------------- ###
 #
-# This program uses several internal variables allow making a bar chart
+# This program uses several internal variables to allow making a bar chart
 # with a minimum of user input.  Creating an SVG bar chart is as easy as
 # calling/invoking this program with a list of integers.
 #
 # i.e. ./barChart "1 4 9 16 25 36 49"
 # 
-# Arg-1 => List of Bar Heigths #
-# The 1st argument to this program is a quoted list of heigths, and is the only
-# required argument.
+## Arg-1 => List of Bar Heigths ---------------------------------------------##
+#  The 1st argument to this program is a quoted list of heigths, and is the
+#  only required argument.
 #
-# The height of the plot, the bar chart, is determined by using the maximum
-# value in the list of bar/rectangle heights that is passed by the user.
+#  The height of the plot, the bar chart, is determined by using the maximum
+#  value in the list of bar/rectangle heights that is passed by the user.
 #
-# The width of the plot is determined using the height of plot along with the
-# 'defaultAspectRatio', forcing the 'plotWidth' and 'plotHeight' to fit the
-# aspect ratio.
+#  The width of the plot is determined using the height of the plot along with
+#  the 'defaultAspectRatio', forcing the 'plotWidth' and 'plotHeight' to fit
+#  the aspect ratio.
 #
-# COMING SOON => If you want to label your bars just add a semi-colon and label after each
-# height value in the list.  i.e. "20:A 15:B 54:C" 
+#   If you want to label your bars just add a semi-colon and label after each
+#   height value in the list.  i.e. "20:A 15:B 54:C" 
 # 
-# Arg-2 => Bar Width or Chart Asoect Ratio #
-# If a specific/known width, or a different aspect ratio, is desired then it
-# can be provided by the user as the 2nd argument to this program.
-# i.e. 640 or 3:2
+## Arg-2 => Bar Width or Chart Aspect Ratio -------------------------------- ##
+#  If a specific/known width, or a different aspect ratio, is desired then it
+#  can be provided by the user as the 2nd argument to this program.
+#  i.e. 640 or 3:2
 #
-# Arg-3 => Title #
-# Provide a quoted string as a 3rd argument to title your chart.
+## Arg-3 => Title ---------------------------------------------------------- ##
+#  Provide a quoted string as a 3rd argument to title your chart.
 #
-# Arg-4 => Y-Max (Headroom) #
-# By default the maximum Y value of the chart is set equal to the max height
-# from the list of bar heights given in the 1st argument.  To set a higher
-# value for the maximum Y, and give your chart some headroom, pass your max-Y
-# as a 4th argument.
+## Arg-4 => Y-Max (Headroom) ##
+#  By default the maximum Y value of the chart is set equal to the max height
+#  from the list of bar heights given in the 1st argument.  To set a higher
+#  value for the maximum Y, and give your chart some headroom, pass your max-Y
+#  as a 4th argument.
+#
+### EndUP => Usage and Parameters ----------------------------------------- ###
 
 listOfRectHeigths="$1" # "$2" # "$4"
 # $3 is Chart Title (chartLabelText)
@@ -343,20 +354,108 @@ svgHead=`sed -e "s/SVG_DOC_WIDTH/$plotWidth/g" -e "s/SVG_DOC_HEIGHT/$plotHeight/
 svgTail=`sed -e "s/LABEL_TEXT/$chartLabelText/g" -e "s/LABEL_HEIGHT/$chartLabelHeight/g" -e "s/xLabelStart/$xChartLabelStart/g" -e "s/yLabelStart/$yChartLabelStart/g" -e "s/LABEL_PADDING/chartLabelPadding/g" -e "s/LABEL_DISPLAY/$chartLabelDisplay/g" $tailSVG`
 dtStamp=`date +%Y%m%d_%H%M_%s` # 20140129_1817_1391041044
 printf '%s' "$svgHead$rectSet$svgTail" > $rectangleSetOutInstance
-yourSimpleBarChart_SVG=`printf '%s' "$derivativesCacheInstance" | sed -e "s/DT-STAMP/$dtStamp/g"`
+stampedRectSetSVG=`printf '%s' "$rectangleSetOutInstance" | sed -e "s/DT-STAMP/$dtStamp/g"`
+stampedRectSetSVG_cache=`printf '%s' "$derivativesCacheInstance" | sed -e "s/DT-STAMP/$dtStamp/g"`
 
-if test ! -d $workingDir/$derivativesCache; then mkdir -vp $derivativesCache; fi;
+useDerivativeCaching=1
+if test $useDerivativeCaching -eq 1;
+	then
+		if test ! -d $workingDir/$derivativesCache; then mkdir -vp $derivativesCache; fi;
+		yourSimpleBarChart_SVG="$stampedRectSetSVG_cache"
+	else
+		yourSimpleBarChart_SVG="$stampedRectSetSVG"
+fi;
+
+printf '\nOutput written to rectangleSetOutInstance (%s):\n' "$rectangleSetOutInstance"
+ls -lhAt $rectangleSetOutInstance | sed -e 's/^/\t/g'
+file $rectangleSetOutInstance | sed -e 's/^/\t/g'
+wc -l $rectangleSetOutInstance | sed -e 's/^/\t/g' -e 's/$/\n/g'
+
+cp -vp $rectangleSetOutInstance $yourSimpleBarChart_SVG
 YSBC="$workingDir/$yourSimpleBarChart_SVG"
-WB='chromium-browser'
-WBoptsA='--app=file://'
-WBoptsB='--app-window-size'
-printf '\nDisplaying your SBC instance (%s) using a new browser (%s) window!\n' "$YSBC" "$WB"
 
-cp -p $rectangleSetOutInstance $yourSimpleBarChart_SVG
-$WB $WBoptsA/$YSBC $WBoptsB=$plotWidth,$plotHeight &
+slimWebKitBrowser=`which uzbl-core`
+if test -e "$slimWebKitBrowser"; then slimWB=1; else slimWB=0; fi;
 
-# ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 65 "5 8 13 21 34 55 89 144 233 377"
-# ./makeXRectsOfWidthW-givenListOfYRectHeights.sh 20 "10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 210 220 230 240 250 260 270 280 290 300 310 320 330 340 350 360 380"
+fatWebKitBrowser=`which chromium-browser`
+if test -e "$fatWebKitBrowser"; then fatWB=1; else fatWB=0; fi;
+
+WB=$slimWebKitBrowser
+WBoptA='--uri=file://'
+WBoptB='--geometry='
+WBoptC='--named='
+WBoptA="$WBoptA/$YSBC"
+WBoptB="$WBoptB$plotWidth"'x'"$plotHeight"
+WBoptC="$WBoptC$yourSimpleBarChart_SVG"
+wbOpts="$WBoptA $WBoptB $WBoptC"
+slimDisplay="$WB $wbOpts"
+
+WB=$fatWebKitBrowser
+WBoptA='--app=file://'
+WBoptB='--app-window-size='
+WBoptA="$WBoptA/$YSBC"
+WBoptB="$WBoptB$plotWidth,$plotHeight"
+wbOpts="$WBoptA $WBoptB"
+fatDisplay="$WB $wbOpts"
+
+WB=''
+displayInBothThinAnFat=0
+preferredWB='fat'
+if test $displayInBothThinAnFat -eq 1;
+	then
+		WB="$slimDisplay $fatDisplay"
+		displays="$slimWebKitBrowser $fatWebKitBrowser"
+	else
+		if test $preferredWB = 'slim';
+			then
+				if test $slimWB -eq 1;
+					then
+						WB="$slimDisplay &"
+						displays="$slimWebKitBrowser"
+					else
+						if test $fatWB -eq 1;
+							then
+								WB="$fatDisplay &"
+								displays="$fatWebKitBrowser"
+						fi;
+				fi;
+		fi;
+		if test $preferredWB = 'fat';
+			then
+				if test $fatWB -eq 1;
+					then
+						WB="$fatDisplay &"
+						displays="$fatWebKitBrowser"
+					else
+						if test $slimWB -eq 1;
+							then
+								WB="$slimDisplay &"
+								displays="$slimWebKitBrowser"
+						fi;
+				fi;
+		fi;
+fi;
+
+if test "$displays" = '' -o "$WB" = '';
+	then
+		printf '\niNiether slim (%s) nor fat (%s) WebKit browsers were found, to view your Simple Bar Chart (%s) open it using your favorite browser or SVG application.\n' "$slimWebKitBrowser" "$fatWebKitBrowser" "$YSBC"
+	else
+		printf '\nDisplaying your SBC instance (%s)' "$yourSimpleBarChart_SVG"
+		printf '\nusing a new browser (%s) window!\n' "$displays" # "$WB"
+		if test $displayInBothThinAnFat -eq 1;
+			then 
+				if test $slimWB -eq 1; then $slimDisplay & fi;
+				printf '\n%s\n' 'SLIM' 
+				if test $fatWB -eq 1; then $fatDisplay & fi;
+				printf '\n%s\n' 'FAT' 
+			else
+				$WB
+		fi;
+fi;
+
+myProgram="$0"
+SBC=`ls -lhAt $myProgram | cut -d ' ' -f 10-`
+printf '\n\nThank you for using the simpleBarCharter, (sbc) => (%s), version 0.0.10\n\n' "$SBC"
 
 exit 0;
 
