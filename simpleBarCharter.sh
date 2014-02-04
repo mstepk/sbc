@@ -374,88 +374,22 @@ wc -l $rectangleSetOutInstance | sed -e 's/^/\t/g' -e 's/$/\n/g'
 cp -vp $rectangleSetOutInstance $yourSimpleBarChart_SVG
 YSBC="$workingDir/$yourSimpleBarChart_SVG"
 
-slimWebKitBrowser=`which uzbl-core`
-if test -e "$slimWebKitBrowser"; then slimWB=1; else slimWB=0; fi;
+tryDisplayingBarChartInABrowser=1
+browserLauncher='launchBrowserWindowToDisplaySVG.sh'
+geometry="$plotWidth"'x'"$plotHeight"
+displays=1
 
-fatWebKitBrowser=`which chromium-browser`
-if test -e "$fatWebKitBrowser"; then fatWB=1; else fatWB=0; fi;
-
-WB=$slimWebKitBrowser
-WBoptA='--uri=file://'
-WBoptB='--geometry='
-WBoptC='--named='
-WBoptA="$WBoptA/$YSBC"
-WBoptB="$WBoptB$plotWidth"'x'"$plotHeight"
-WBoptC="$WBoptC$yourSimpleBarChart_SVG"
-wbOpts="$WBoptA $WBoptB $WBoptC"
-slimDisplay="$WB $wbOpts"
-
-WB=$fatWebKitBrowser
-WBoptA='--app=file://'
-WBoptB='--app-window-size='
-WBoptA="$WBoptA/$YSBC"
-WBoptB="$WBoptB$plotWidth,$plotHeight"
-wbOpts="$WBoptA $WBoptB"
-fatDisplay="$WB $wbOpts"
-
-WB=''
-displayInBothThinAnFat=0
-preferredWB='fat'
-if test $displayInBothThinAnFat -eq 1;
+if test $tryDisplayingBarChartInABrowser -eq 1;
 	then
-		WB="$slimDisplay $fatDisplay"
-		displays="$slimWebKitBrowser $fatWebKitBrowser"
-	else
-		if test $preferredWB = 'slim';
+		if test -e $browserLauncher;
 			then
-				if test $slimWB -eq 1;
-					then
-						WB="$slimDisplay &"
-						displays="$slimWebKitBrowser"
-					else
-						if test $fatWB -eq 1;
-							then
-								WB="$fatDisplay &"
-								displays="$fatWebKitBrowser"
-						fi;
-				fi;
-		fi;
-		if test $preferredWB = 'fat';
-			then
-				if test $fatWB -eq 1;
-					then
-						WB="$fatDisplay &"
-						displays="$fatWebKitBrowser"
-					else
-						if test $slimWB -eq 1;
-							then
-								WB="$slimDisplay &"
-								displays="$slimWebKitBrowser"
-						fi;
-				fi;
-		fi;
-fi;
-
-if test "$displays" = '' -o "$WB" = '';
-	then
-		printf '\niNiether slim (%s) nor fat (%s) WebKit browsers were found, to view your Simple Bar Chart (%s) open it using your favorite browser or SVG application.\n' "$slimWebKitBrowser" "$fatWebKitBrowser" "$YSBC"
-	else
-		printf '\nDisplaying your SBC instance (%s)' "$yourSimpleBarChart_SVG"
-		printf '\nusing a new browser (%s) window!\n' "$displays" # "$WB"
-		if test $displayInBothThinAnFat -eq 1;
-			then 
-				if test $slimWB -eq 1; then $slimDisplay & fi;
-				printf '\n%s\n' 'SLIM' 
-				if test $fatWB -eq 1; then $fatDisplay & fi;
-				printf '\n%s\n' 'FAT' 
-			else
-				$WB
+				./$browserLauncher "$YSBC" "$yourSimpleBarChart_SVG" "$geometry" "$displays" &
 		fi;
 fi;
 
 myProgram="$0"
 SBC=`ls -lhAt $myProgram | cut -d ' ' -f 10-`
-printf '\n\nThank you for using the simpleBarCharter, (sbc) => (%s), version 0.0.10\n\n' "$SBC"
+printf '\n\nThank you for using the simpleBarCharter, (sbc) => (%s), version 0.0.11\n\n' "$SBC"
 
 exit 0;
 
